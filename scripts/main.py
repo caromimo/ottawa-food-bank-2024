@@ -30,7 +30,9 @@ survey_languages = survey_languages.rename(columns={"q001": "Language", 0: "Coun
 print(survey_languages)
 
 # ------------------------------------------------------------------------------
-
+# Bar plot of survey languages
+fig = px.bar(survey_languages, x="Language", y="Count")
+fig.show()
 
 # ------------------------------------------------------------------------------
 # App layout
