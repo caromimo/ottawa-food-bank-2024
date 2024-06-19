@@ -44,7 +44,7 @@ app.layout = html.Div(
         dcc.Checklist(["Arabic", "English", "French", "Simplified Chinese"]),
         html.Div(id="output_container", children=[]),
         html.Br(),
-        dcc.Graph(id="my_bee_map", figure={}),
+        dcc.Graph(id="my_bee_map", figure=fig),
     ]
 )
 
