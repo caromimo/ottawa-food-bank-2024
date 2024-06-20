@@ -2,7 +2,8 @@
 # Import librairies
 import pandas as pd
 import plotly.express as px
-import plotly.graph_objects as go
+
+# import plotly.graph_objects as go
 
 from dash import Dash, dcc, html, Input, Output
 
@@ -32,22 +33,30 @@ print(survey_languages)
 # ------------------------------------------------------------------------------
 # Bar plot of survey languages
 fig = px.bar(survey_languages, x="Language", y="Count")
-fig.show()
 
 # ------------------------------------------------------------------------------
-# App layout
+# app layout
 app.layout = html.Div(
     [
         html.H1(
             "Ottawa Food Bank - 2024 Neighbour Survey", style={"text-align": "center"}
         ),
-        dcc.Checklist(["Arabic", "English", "French", "Simplified Chinese"]),
+        dcc.Dropdown(
+            id="language_dropdown",
+            options=[
+                {"label": "Arabic", "value": "Arabic"},
+                {"label": "English", "value": "English"},
+                {"label": "French", "value": "French"},
+                {"label": "Simplified Chinese", "value": "Simplified Chinese"},
+            ],
+            multi=True,
+            style={"width": "50%"},
+        ),
         html.Div(id="output_container", children=[]),
         html.Br(),
-        dcc.Graph(id="my_bee_map", figure=fig),
+        dcc.Graph(id="language_plot", figure=fig),
     ]
 )
-
 
 # ------------------------------------------------------------------------------
 if __name__ == "__main__":
