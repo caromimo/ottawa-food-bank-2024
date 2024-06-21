@@ -1,0 +1,39 @@
+---
+title: "Data for Good Ottawa: 2024 Ottawa Food Bank Project"
+format: 
+    html:
+        toc: true
+        toc-title: "Index"
+        toc-depth: 2
+        smooth-scroll: true
+        toc-location: left
+        theme: flatly
+jupyter: python3
+---
+
+# Introduction
+
+The [Data For Good Ottawa](https://ottawa.dataforgood.ca/) is a collective of volunteers who want to use their data skills for good and to help make their communities better. For their summer 2024 event, Data For Good Ottawa paired with the [Ottawa Food Bank](https://www.ottawafoodbank.ca/) to gain insight about their users.
+
+The 
+
+# Data Preparation
+
+## Import packages
+
+```{python, include=FALSE}
+import pandas as pd
+import numpy as np
+import matplotlib as plt
+```
+
+## Import data
+
+
+
+## Clean data
+
+
+# Data Analysis
+
+
