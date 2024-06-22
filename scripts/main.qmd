@@ -68,24 +68,24 @@ tbl-cap-location: top
 ---
 : Summary of survey questions {#tbl-survey-questions}
 
-| No | Question | Data |
-|-|----------|-|
-| id | Participant | ID |
-| 001 | Language of survey | factor |
-| 002 | Is your income enough to meet your food needs? | factor |
-| 003 | How often did the following occur in the last 12 months? "The food that I bought just didn't last, and I didn't have money to get more." | factor |
-| 004 | How often did the following occur in the last 12 months? I couldn't afford to eat nutritionally balanced meals. | factor |
-| 005 | In the last 12 months, did you ever cut the size of your meals or skip meals because there wasn't enough money for food? | factor |
-| 006 | How often did this happen in the last 12 months? | factor |
-| 007 | In the last 12 months, did you ever eat less than you felt you should because there wasn't enough money for food? | factor |
-| 008 | In the last 12 months, were you ever hungry but didn't eat because there wasn't enough money for food? | factor |
-| 009 | How many years ago did you and your household first use a food bank? | factor |
-| 010 | How often do you visit a food bank? | factor |
+| No | Question | Data | Levels |
+|-|---------|-|-----|
+| id | Participant | ID | NA |
+| 001 | Language of survey | factor | Arabic; English; French; Simplified Chinese |
+| 002 | Is your income enough to meet your food needs? | factor | no; prefer not to answer; yes |
+| 003 | How often did the following occur in the last 12 months? "The food that I bought just didn't last, and I didn't have money to get more." | factor | don't know; never true; often true; prefer not to answer; sometimes true |
+| 004 | How often did the following occur in the last 12 months? I couldn't afford to eat nutritionally balanced meals. | factor | don't know; never true; often true; prefer not to answer; sometimes true |
+| 005 | In the last 12 months, did you ever cut the size of your meals or skip meals because there wasn't enough money for food? | factor | don't know; no; prefer not to answer; yes |
+| 006 | How often did this happen in the last 12 months? | factor | almost every month; did not happen; don't know; only 1 or 2 months; prefer not to answer; some months but not every month |
+| 007 | In the last 12 months, did you ever eat less than you felt you should because there wasn't enough money for food? | factor | don't know; no; prefer not to answer; yes |
+| 008 | In the last 12 months, were you ever hungry but didn't eat because there wasn't enough money for food? | factor | don't know; no; prefer not to answer; yes |
+| 009 | How many years ago did you and your household first use a food bank? | factor | 1 to 2 years ago; 3 to 4 years ago; 5 to 10 years ago; less than 1 year ago; more than 10 years ago; prefer not to answer |
+| 010 | How often do you visit a food bank? | factor | every 6 months; every two months; less than twice a year; once per month; other; prefer not to answer; two times per month |
 | 011 | Food programs include: food banks that serve a specific catchment region; meal programs, community kitchens / cooking programs; food pantries; community fridges; or any combination.
-| a | How often do you visit a food program that is not a food bank? | factor |
+| a | How often do you visit a food program that is not a food bank? | factor | daily; don't visit every month; every two months; I do not visit other food programs; less than every 6 months; more than once a week but less than daily; once a week; other; other (please specify); prefer not to answer'; two times a month |
 | b | How often do you visit a food program that is not a food bank? Other (please specify) | text |
 | 012 | Which food bank do you visit most often? | text |
-| 013 | How many different food programs do you visit in a month? | factor |
+| 013 | How many different food programs do you visit in a month? | factor | 2 to 3; don't visit every month; more than 4; none of the above; one; prefer not to answer |
 | 014 | Do you have difficulty accessing food programs due to any of the following? Please select all that apply. 
 | a | none of the above | boolean |
 | b | language barriers | boolean |
@@ -95,7 +95,7 @@ tbl-cap-location: top
 | f | program hours of operation | boolean |
 | g | prefer not to answer | boolean |
 | h | Other (please specify) | text |
-| 015 | How long does it take you to get to the food program you visit most often? | factor |
+| 015 | How long does it take you to get to the food program you visit most often? | factor | 30-60 minutes; 60-90 minutes; less than 30 minutes; more than 90 minutes; prefer not to answer | 
 | 016 | How do you get to the food program you visit most often? Please select all that apply. |
 | a | walk | boolean |
 | b | cycle | boolean |
@@ -116,8 +116,8 @@ tbl-cap-location: top
 | j | prefer not to answer | boolean |
 | k | Other (please specify) | text | 
 | 018 | Are there any services you would like food programs to offer? | text |
-| 019 | Are you able to exercise regularly? | factor |
-| 020 | If yes, how often do you exercise? | factor |
+| 019 | Are you able to exercise regularly? | factor | no; prefer not to answer; yes |
+| 020 | If yes, how often do you exercise? | factor | 2-4 times a week; 5 or more times a week; daily; do not exercise; less than 1 time a week; prefer not to answer |
 | 021 | Do you have any of the following? Please select all that apply.
 | a | prefer not to answer | boolean |
 | b | diabetes | boolean |
@@ -125,7 +125,7 @@ tbl-cap-location: top
 | d | heart disease | boolean |
 | e | no health conditions | boolean |
 | f | other (please specify) | text |
-| 022 | Are you pregnant? | factor |
+| 022 | Are you pregnant? | factor | no; not applicable; prefer not to answer |
 | 023 | Do food programs meet your unique food needs? |
 | a | none of the above | boolean |
 | b | Yes | boolean |
@@ -143,9 +143,9 @@ tbl-cap-location: top
 | g | no special food | boolean |
 | h | prefer not to answer | boolean |
 | i | other (please specify) | text |
-| 025 | How old are you? | factor |
-| 026 | How many people live in your household, including yourself? | factor |
-| 027 | Do any children live in your household? | factor |
+| 025 | How old are you? | factor | 18-20; 21-30; 31-40; 41-50; 51-60; 61-70 ;over 70; prefer not to answer |
+| 026 | How many people live in your household, including yourself? | factor | 2 to 4; 5 to 7; more than 7; one ;prefer not to answer |
+| 027 | Do any children live in your household? | factor | no; prefer not to answer; yes |
 | 028 | Are you breastfeeding? |
 | a | Yes | boolean |
 | b | No | boolean |
@@ -165,14 +165,12 @@ tbl-cap-location: top
 | g | completed graduate education | boolean |
 | h | professional degree | boolean |
 | i | prefer not to answer | boolean |
-| 034 | Did you complete your highest level of education outside of Canada? | factor |
-| 035 | What is your status in Canada? |
-| a| applying for refugee status; canadian citizen; international student; migrant worker; other; permanent resident; prefer not to answer; refugee | factor |
+| 034 | Did you complete your highest level of education outside of Canada? | factor | no: prefer not to answer: received canadian equivalency: yes |
+| 035 | What is your status in Canada? | factor | applying for refugee status; canadian citizen; international student; migrant worker; other; permanent resident; prefer not to answer; refugee |
 | b | other (please specify) | text |
-| 036 | What is your gender? |
-| a | man; prefer not to answer; trans man; trans woman; woman| factor |
+| 036 | What is your gender? | factor | man; prefer not to answer; trans man; trans woman; woman |
 | b | other (please specify) | text |
-| 037 | How long have you lived in Canada? | factor |
+| 037 | How long have you lived in Canada? | factor | 1-4 years: 10 or more years: 5-9 years: canadian born; less than 1 year ago; not applicable; prefer not to answer |
 | 038 | Which of the following best describes your ethnic background? Please select all that apply. |
 | a | Indigenous (Inuit/First Nations/Metis) | boolean |
 | b | White/European | boolean |
@@ -195,8 +193,7 @@ tbl-cap-location: top
 | g | mental illness | boolean |
 | h | prefer not to answer | boolean |
 | i | other (please specify) | text |
-| 040 | Which of the following best describes where you currently live? |
-| a | Private rental housing | factor |
+| 040 | Which of the following best describes where you currently live? Private rental housing | factor | group home/youth shelter; on the street; other; own home (mortgaged or fully owned); prefer not to answer; private rental housing; rooming house; shelter; social rental housing; supportive housing; with family or friends |
 | b | Other (please specify) | text |
 | 041 | In the past month, which of the following sources of income did you have? Please select all that apply. |
 | a | Employed at least 35 hours each week | boolean |
