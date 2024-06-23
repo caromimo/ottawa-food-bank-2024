@@ -1,5 +1,5 @@
 ---
-title: "Data for Good Ottawa: 2024 Ottawa Food Bank Project"
+title: "Data for Good Ottawa - Ottawa Food Bank Project - Summer 2024"
 format: 
     html:
         toc: true
@@ -15,11 +15,22 @@ jupyter: python3
 
 The [Data For Good Ottawa](https://ottawa.dataforgood.ca/) is a organisation of volunteers who want to use their data skills for good and to help their communities.
 
-For their summer 2024 event, Data For Good Ottawa paired with the [Ottawa Food Bank](https://www.ottawafoodbank.ca/) (OFB) to gain insight about their users. To do so, the OFB invited food program visitors to answer a {Neighbour Survey](https://www.ottawafoodbank.ca/neighbourhood-survey-2024/) (NS) in exchange of a $10 grocery certificate.
+For their summer 2024 event, Data For Good Ottawa paired with the [Ottawa Food Bank](https://www.ottawafoodbank.ca/) (OFB) to gain insight about their users. To do so, the OFB invited food program visitors to answer a [Neighbour Survey](https://www.ottawafoodbank.ca/neighbourhood-survey-2024/) (NS) in exchange of a $10 grocery certificate.
 
-Over 4000 participants, between April and May 2024, took part to the online survey which included 42 questions related to food security, food bank experience, unique needs, health, wellbeing, and demographics.
+Over 4000 participants, between April and May 2024, took part to the online survey which included 42 questions related to food security, food bank experience, unique needs, health, wellbeing, and demographics. All survey questions are includes in the appendix (see @tbl-survey-questions.)
 
-The research question posed by the OFB is "What is the relationship between food security status and health/demographics/needs in our sample?"
+The research question posed by the OFB is *"What is the relationship between food security status and health/demographics/needs in our sample?"* 
+
+The concept of food security is often attributed to the 1996 World Food Summit and defined as "Food security exists when all people, at all times, have physical and economic access to sufﬁcient, safe and nutritious food that meets their dietary needs and food preferences for an active and healthy life” [FAO, 2006](https://www.fao.org/fileadmin/templates/faoitaly/documents/pdf/pdf_Food_Security_Cocept_Note.pdf). This definition includes the following dimensions:
+
+- *Food availability*: The availability of sufﬁcient quantities of food of appropriate quality, supplied through domestic production or imports
+(including food aid).
+
+- *Food access*: Access by individuals to adequate resources (entitlements) for acquiring appropriate foods for a nutritious diet. Entitlements are deﬁned as the set of all commodity bundles over which a person can establish command given the legal, political, economic and social arrangements of the community in which they live (including traditional rights such as access to common resources).
+
+- *Utilization*: Utilization of food through adequate diet, clean water, sanitation and health care to reach a state of nutritional well-being where all physiological needs are met. This brings out the importance of non-food inputs in food security.
+
+- *Stability*: To be food secure, a population, household or individual must have access to adequate food at all times. They should not risk losing access to food as a consequence of sudden shocks (e.g. an economic or climatic crisis) or cyclical events (e.g. seasonal food insecurity).
 
 # Exploratory Data Analysis
 
@@ -27,38 +38,53 @@ This section includes some initial data preparation and exploration of the NS re
 
 ## Import packages
 
-```{python, include=FALSE}
-import pandas as pd
+```{python}
 import numpy as np
 import matplotlib as plt
+import plotly.express as px
+import pandas as pd
 ```
 
 ## Import data
 
 ```{python}
-# check working directory
+# | include: false
 from pathlib import Path
 print(Path.cwd())
 ```
 
 ```{python}
-data = pd.read_csv("../data/raw/neighbour_survey_clean-2024-06-14.csv")
-print(type(data))
+df = pd.read_csv("../data/raw/neighbour_survey_clean-2024-06-14.csv")
 ```
+
+Here is a sample of the data:
+```{python}
+# | echo: false
+df.head()
+df.describe()
+```
+
+## Data cleaning
 
 ```{python}
-data.describe()
+df.q005 = df.q005.str.lower()
 ```
 
+## Data visualisation
 
-## Clean data
-
+```{python}
+# | echo: false
+df.q005.value_counts().plot(kind="barh")
+```
 
 # Data Analysis
 
+## Response rate
 
 
+# Interpretation
 
+## Limitation
 
 
 # Appendix - Survey questions
