@@ -145,21 +145,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>This section includes some initial data preparation and exploration of the NS results.</p>
 <section id="import-packages" class="level2">
 <h2 class="anchored" data-anchor-id="import-packages">Import packages</h2>
-<div id="b4670cee" class="cell" data-execution_count="1">
+<div id="f5eb4a15" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib <span class="im">as</span> plt</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.express <span class="im">as</span> px</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> Counter</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="import-data" class="level2">
 <h2 class="anchored" data-anchor-id="import-data">Import data</h2>
-<div id="9027b057" class="cell" data-execution_count="3">
+<div id="7ca30efb" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"../data/raw/neighbour_survey_clean-2024-06-14.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Here is a sample of the data:</p>
-<div id="fa8b144d" class="cell" data-execution_count="4">
-<div class="cell-output cell-output-display" data-execution_count="4">
+<div id="fa92b753" class="cell" data-execution_count="4">
+<div class="cell-output cell-output-display" data-execution_count="202">
 <div>
 <div>
 
@@ -193,105 +194,129 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">count</td>
-<td>4057</td>
-<td>4054</td>
-<td>4036</td>
-<td>4026</td>
-<td>4027</td>
-<td>4040</td>
-<td>2869</td>
-<td>4018</td>
-<td>4019</td>
-<td>4037</td>
+<td data-quarto-table-cell-role="th">0</td>
+<td>NS 757</td>
+<td>English</td>
+<td>No</td>
+<td>Often true</td>
+<td>Often true</td>
+<td>Yes</td>
+<td>Almost every month</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>More than 10 years ago</td>
 <td>...</td>
-<td>99</td>
-<td>41</td>
-<td>81</td>
-<td>28</td>
-<td>32</td>
-<td>88</td>
-<td>220</td>
-<td>192</td>
-<td>67</td>
-<td>1882</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>There should be some accountability for places...</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">unique</td>
-<td>4051</td>
-<td>4</td>
-<td>3</td>
-<td>7</td>
-<td>7</td>
-<td>5</td>
-<td>7</td>
-<td>5</td>
-<td>5</td>
-<td>8</td>
+<td data-quarto-table-cell-role="th">1</td>
+<td>NS 318</td>
+<td>English</td>
+<td>No</td>
+<td>Sometimes true</td>
+<td>Often true</td>
+<td>Yes</td>
+<td>Almost every month</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>5 to 10 years ago</td>
 <td>...</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>2</td>
-<td>1</td>
-<td>63</td>
-<td>672</td>
+<td>NaN</td>
+<td>Private pension</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>Short/long term disability</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">top</td>
-<td>NS</td>
+<td data-quarto-table-cell-role="th">2</td>
+<td>NS 328</td>
 <td>English</td>
 <td>No</td>
 <td>Sometimes true</td>
 <td>Sometimes true</td>
+<td>No</td>
+<td>NaN</td>
+<td>Yes</td>
+<td>Don't know</td>
+<td>5 to 10 years ago</td>
+<td>...</td>
+<td>Canadian Pension Plan (CPP)</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>Not at the moment</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>NS 646</td>
+<td>English</td>
+<td>No</td>
+<td>Often true</td>
+<td>Often true</td>
 <td>Yes</td>
 <td>Some months but not every month</td>
 <td>Yes</td>
 <td>Yes</td>
-<td>1 to 2 years ago</td>
+<td>Less than 1 year ago</td>
 <td>...</td>
-<td>Canadian Pension Plan (CPP)</td>
-<td>Private pension</td>
-<td>Old Age Security (OAS)</td>
-<td>Workplace Safety and Insurance Board (WSIB)</td>
-<td>Short/long term disability</td>
-<td>Other government programs</td>
-<td>No income</td>
-<td>Prefer not to answer</td>
-<td>Self employed</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
 <td>No</td>
 </tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">freq</td>
-<td>3</td>
-<td>3387</td>
-<td>2874</td>
-<td>1931</td>
-<td>1907</td>
-<td>2902</td>
-<td>1247</td>
-<td>2965</td>
-<td>2508</td>
-<td>1148</td>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>NS 678</td>
+<td>English</td>
+<td>Prefer not to answer</td>
+<td>Sometimes true</td>
+<td>Sometimes true</td>
+<td>Yes</td>
+<td>Some months but not every month</td>
+<td>Prefer not to answer</td>
+<td>Yes</td>
+<td>3 to 4 years ago</td>
 <td>...</td>
-<td>99</td>
-<td>41</td>
-<td>81</td>
-<td>28</td>
-<td>32</td>
-<td>88</td>
-<td>138</td>
-<td>192</td>
-<td>3</td>
-<td>763</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>Old Age Security (OAS)</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>Keep up the good work yhat u do</td>
 </tr>
 </tbody>
 </table>
 
-<p>4 rows × 136 columns</p>
+<p>5 rows × 136 columns</p>
 </div>
 </div>
 </div>
@@ -299,17 +324,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="data-cleaning" class="level2">
 <h2 class="anchored" data-anchor-id="data-cleaning">Data cleaning</h2>
-<div id="1055ca13" class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df.q005 <span class="op">=</span> df.q005.<span class="bu">str</span>.lower()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<p>The data was</p>
 </section>
 <section id="data-visualisation" class="level2">
 <h2 class="anchored" data-anchor-id="data-visualisation">Data visualisation</h2>
-<div id="36883d82" class="cell" data-execution_count="6">
+<div id="f3ebc8f3" class="cell" data-execution_count="8">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="main_files/figure-html/cell-7-output-1.png" width="713" height="411" class="figure-img"></p>
+<p><img src="main_files/figure-html/cell-9-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="6f4faeec" class="cell" data-execution_count="9">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="main_files/figure-html/cell-10-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="ec94bef2" class="cell" data-execution_count="10">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="main_files/figure-html/cell-11-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="89111d57" class="cell" data-execution_count="11">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="main_files/figure-html/cell-12-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>

@@ -40,9 +40,10 @@ This section includes some initial data preparation and exploration of the NS re
 
 ```{python}
 import numpy as np
-import matplotlib as plt
+import matplotlib.pyplot as plt
 import plotly.express as px
 import pandas as pd
+from collections import Counter
 ```
 
 ## Import data
@@ -61,20 +62,63 @@ Here is a sample of the data:
 ```{python}
 # | echo: false
 df.head()
+```
+
+```{python}
+# | include: false
 df.describe()
 ```
 
 ## Data cleaning
 
+The data was
 ```{python}
+# | include: false
+df.q003 = df.q003.str.lower()
 df.q005 = df.q005.str.lower()
 ```
 
 ## Data visualisation
 
 ```{python}
+# | include: false
+plt.style.use("default")
+```
+
+```{python}
 # | echo: false
-df.q005.value_counts().plot(kind="barh")
+df.q001.value_counts().sort_values(ascending=True).plot.barh()
+plt.title("Survey Language of Respondents (Q1)");  # fmt: skip
+plt.xlabel("Number of respondents");  # fmt: skip
+plt.ylabel("");  # fmt: skip
+```
+
+```{python}
+# | echo: false
+df.q002.value_counts().sort_values(ascending=True).plot.barh()
+plt.title("Are the respondent's incomes enough to meet their food needs? (Q2)");  # fmt: skip
+plt.xlabel("Number of respondents");  # fmt: skip
+plt.ylabel("");  # fmt: skip
+```
+
+```{python}
+# | echo: false
+df.q003.value_counts().sort_values(ascending=True).plot.barh()
+plt.title(
+    "How often did respondents not have money to get more food in the last 12 months? (Q3)"
+);  # fmt: skip
+plt.xlabel("Number of respondents");  # fmt: skip
+plt.ylabel("");  # fmt: skip
+```
+
+```{python}
+# | echo: false
+df.q005.value_counts().sort_values(ascending=True).plot.barh()
+plt.title(
+    "Have respondents cut size or skipped meals because they did not have money for food in the last 12 months? (Q5)"
+);  # fmt: skip
+plt.xlabel("Number of respondents");  # fmt: skip
+plt.ylabel("");  # fmt: skip
 ```
 
 # Data Analysis
@@ -244,4 +288,3 @@ tbl-cap-location: top
 | t | Prefer not to answer | boolean |
 | u | Other (please specify) | text |
 | 042 | Are there any comments or ideas you would like to share? | text |
-
