@@ -1,5 +1,5 @@
 ---
-title: "Data for Good Ottawa - Ottawa Food Bank Project - Summer 2024"
+title: "Data for Good Ottawa - Ottawa Food Bank Project - Summer 2024 - UNREVISED DRAFT"
 format: 
     html:
         toc: true
@@ -34,9 +34,9 @@ The concept of food security is often attributed to the 1996 World Food Summit a
 
 # Exploratory Data Analysis
 
-This section includes some initial data preparation and exploration of the NS results.
+The code, but not the data, for this page is available on [GitHub](https://github.com/caromimo/ottawa-food-bank-2024). This section includes some initial data preparation and exploration of the NS results.
 
-## Import packages
+## Setup
 
 ```{python}
 import numpy as np
@@ -45,7 +45,9 @@ import plotly.express as px
 import pandas as pd
 ```
 
-## Import data
+## Data import
+
+OFB shared data with DFG volunteers as csv files. 
 
 ```{python}
 # | include: false
@@ -57,9 +59,9 @@ print(Path.cwd())
 df = pd.read_csv("./data/raw/neighbour_survey_clean-2024-06-14.csv")
 ```
 
-Here is a sample of the data:
 ```{python}
-# | echo: false
+# | include: false
+df.info()
 df.head()
 ```
 
@@ -70,11 +72,60 @@ df.describe()
 
 ## Data cleaning
 
-The data was
+The data was cleaned by applying the following steps: (1) normalizing spelling when necessary, (2) collapsing some categories for some questions.
+
 ```{python}
 # | include: false
 df.q003 = df.q003.str.lower()
 df.q005 = df.q005.str.lower()
+df.q009 = df.q009.str.lower()
+```
+
+As we are dealing with categorical data, we will convert strings to categories. 
+
+
+```{python}
+# | include: false
+# Create a dictionary of all column names
+conversion_dictionary = {k: "category" for k in df.select_dtypes(include="object").columns}
+conversion_dictionary
+```
+
+Answers to question 9 ("How many years ago did you and your household first use a food bank?"") were collapsed before and after 2020. 
+
+```{python}
+# | include: false
+# Convert df and check data types
+df = df.astype(conversion_dictionary)
+df.info()
+```
+```{python}
+# | include: false
+# Create dictionary of categories to collapse
+new_time_period = {
+    "less than 1 year ago": "After 2020",
+    "1 to 2 years ago": "After 2020",
+    "3 to 4 years ago": "After 2020",
+    "5 to 10 years ago": "Before 2020",
+    "more than 10 years ago": "Before 2020",
+    "prefer not to answer": "Unknown:",
+}
+```
+
+```{python}
+# | include: false
+# Replace the values in the column and reset as a category
+df["time_period_clean"]= df["q009"].replace(new_time_period).astype("category")
+df["time_period_clean"].value_counts()
+```
+
+## Data exploration
+
+The survey was available in four languages. Most repondents answered in English (83%), followed by French (9%), Arabic (6%), and Simplified Chinese (2%).
+
+```{python}
+# | echo: false
+df.q001.value_counts()
 ```
 
 ## Data visualisation
