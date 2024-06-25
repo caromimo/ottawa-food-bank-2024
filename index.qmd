@@ -54,7 +54,7 @@ print(Path.cwd())
 ```
 
 ```{python}
-df = pd.read_csv("../data/raw/neighbour_survey_clean-2024-06-14.csv")
+df = pd.read_csv("./data/raw/neighbour_survey_clean-2024-06-14.csv")
 ```
 
 Here is a sample of the data:
