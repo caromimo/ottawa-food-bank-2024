@@ -43,7 +43,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import plotly.express as px
 import pandas as pd
-from collections import Counter
 ```
 
 ## Import data
@@ -116,6 +115,16 @@ plt.ylabel("");  # fmt: skip
 df.q005.value_counts().sort_values(ascending=True).plot.barh()
 plt.title(
     "Have respondents cut size or skipped meals because they did not have money for food in the last 12 months? (Q5)"
+);  # fmt: skip
+plt.xlabel("Number of respondents");  # fmt: skip
+plt.ylabel("");  # fmt: skip
+```
+
+```{python}
+# | echo: false
+df.q009.value_counts().sort_values(ascending=True).plot.barh()
+plt.title(
+    "How many years ago did the respondents and your household first use a food bank? (Q9)"
 );  # fmt: skip
 plt.xlabel("Number of respondents");  # fmt: skip
 plt.ylabel("");  # fmt: skip
