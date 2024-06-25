@@ -23,9 +23,3 @@ distribution = false
 
 [tool.pdm.scripts]
 render = "quarto render index.qmd"
-#python = { cmd = [
-#    "python",
-#    "-ic",
-#    "'import rlcompleter", 
-#    "readline;readline.parse_and_bind("tab:complete")",
-#] }
