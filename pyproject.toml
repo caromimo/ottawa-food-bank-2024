@@ -22,4 +22,4 @@ license = { text = "MIT" }
 distribution = false
 
 [tool.pdm.scripts]
-render = "quarto render index.qmd"
+render = "quarto render scripts/main.qmd"
