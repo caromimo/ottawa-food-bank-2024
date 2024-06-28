@@ -56,9 +56,7 @@ print(Path.cwd())
 ```
 
 ```{python}
-df = pd.read_csv("./data/raw/neighbour_survey_clean-2024-06-14.csv")
-
-test = pd.read_csv("./data/processed/cleaned_neighbour_survey.csv")
+df = pd.read_csv("../data/raw/neighbour_survey_clean-2024-06-14.csv")
 ```
 
 ## Data exploration
@@ -74,23 +72,7 @@ df.head()
 df.describe()
 ```
 
-## Data cleaning
-
-The data was cleaned by applying the following steps: (1) normalizing spelling when necessary, (2) collapsing some categories for some questions.
-
-Remove NAs
-
-```{python}
-# | include: false
-df.q003 = df.q003.str.lower()
-df.q004 = df.q004.str.lower()
-df.q005 = df.q005.str.lower()
-df.q006 = df.q006.str.lower()
-df.q007 = df.q007.str.lower()
-df.q008 = df.q008.str.lower()
-df.q009 = df.q009.str.lower()
-df.q011a = df.q011a.str.lower()
-```
+## Data collapsing
 
 As we are dealing with categorical data, we will convert strings to categories. 
 
@@ -165,13 +147,12 @@ categories_to_remove = ["prefer not to answer", "don’t know"]
 ```
 ```{python}
 # loop through each column
-for col in ["q003", "q004"]:
-    df[col + "_clean"] = df[col].cat.reorder_categories(new_order, ordered=True)
-    df[col + "_clean"] = df[col + "_clean"].cat.remove_categories(categories_to_remove)
-```
-```{python}
+# for col in ["q003", "q004"]:
+#    df[col + "_clean"] = df[col].cat.reorder_categories(new_order, ordered=True)
+#    df[col + "_clean"] = df[col + "_clean"].cat.remove_categories(categories_to_remove)
+# ```
 # preview
-df["q003_clean"].cat.categories
+# df["q003_clean"].cat.categories
 ```
 
 ```{python}
