@@ -1,0 +1,419 @@
+---
+title: "Data for Good Ottawa - Ottawa Food Bank Project - Summer 2024 - UNREVISED DRAFT"
+format: 
+    html:
+        toc: true
+        toc-title: "Index"
+        toc-depth: 2
+        smooth-scroll: true
+        toc-location: left
+        theme: flatly
+jupyter: python3
+---
+
+# Introduction
+
+The [Data For Good Ottawa](https://ottawa.dataforgood.ca/) is a organisation of volunteers who want to use their data skills for good and to help their communities.
+
+For their summer 2024 event, Data For Good Ottawa paired with the [Ottawa Food Bank](https://www.ottawafoodbank.ca/) (OFB) to gain insight about their users. To do so, the OFB invited food program visitors to answer a [Neighbour Survey](https://www.ottawafoodbank.ca/neighbourhood-survey-2024/) (NS) in exchange of a $10 grocery certificate.
+
+Over 4000 participants, between April and May 2024, took part to the online survey which included 42 questions related to food security, food bank experience, unique needs, health, wellbeing, and demographics. All survey questions are includes in the appendix (see @tbl-survey-questions.)
+
+The research question posed by the OFB is *"What is the relationship between food security status and health/demographics/needs in our sample?"* 
+
+The concept of food security is often attributed to the 1996 World Food Summit and defined as "Food security exists when all people, at all times, have physical and economic access to sufﬁcient, safe and nutritious food that meets their dietary needs and food preferences for an active and healthy life” [FAO, 2006](https://www.fao.org/fileadmin/templates/faoitaly/documents/pdf/pdf_Food_Security_Cocept_Note.pdf). This definition includes the following dimensions:
+
+- *Food availability*: The availability of sufﬁcient quantities of food of appropriate quality, supplied through domestic production or imports
+(including food aid).
+
+- *Food access*: Access by individuals to adequate resources (entitlements) for acquiring appropriate foods for a nutritious diet. Entitlements are deﬁned as the set of all commodity bundles over which a person can establish command given the legal, political, economic and social arrangements of the community in which they live (including traditional rights such as access to common resources).
+
+- *Utilization*: Utilization of food through adequate diet, clean water, sanitation and health care to reach a state of nutritional well-being where all physiological needs are met. This brings out the importance of non-food inputs in food security.
+
+- *Stability*: To be food secure, a population, household or individual must have access to adequate food at all times. They should not risk losing access to food as a consequence of sudden shocks (e.g. an economic or climatic crisis) or cyclical events (e.g. seasonal food insecurity).
+
+# Exploratory Data Analysis
+
+The code, but not the data, for this page is available on [GitHub](https://github.com/caromimo/ottawa-food-bank-2024). This section includes some initial data preparation and exploration of the NS results.
+
+## Setup
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+import plotly.express as px
+import pandas as pd
+```
+
+## Data import
+
+OFB shared data with DFG volunteers as csv files. 
+
+```{python}
+# | include: false
+from pathlib import Path
+print(Path.cwd())
+```
+
+```{python}
+df = pd.read_csv("./data/raw/neighbour_survey_clean-2024-06-14.csv")
+
+test = pd.read_csv("./data/processed/cleaned_neighbour_survey.csv")
+```
+
+## Data exploration
+
+```{python}
+# | include: false
+df.info()
+df.head()
+```
+
+```{python}
+# | include: false
+df.describe()
+```
+
+## Data cleaning
+
+The data was cleaned by applying the following steps: (1) normalizing spelling when necessary, (2) collapsing some categories for some questions.
+
+Remove NAs
+
+```{python}
+# | include: false
+df.q003 = df.q003.str.lower()
+df.q004 = df.q004.str.lower()
+df.q005 = df.q005.str.lower()
+df.q006 = df.q006.str.lower()
+df.q007 = df.q007.str.lower()
+df.q008 = df.q008.str.lower()
+df.q009 = df.q009.str.lower()
+df.q011a = df.q011a.str.lower()
+```
+
+As we are dealing with categorical data, we will convert strings to categories. 
+
+```{python}
+# | include: false
+# Create a dictionary of all column names
+conversion_dictionary = {k: "category" for k in df.select_dtypes(include="object").columns}
+conversion_dictionary
+```
+
+```{python}
+# | include: false
+# Convert df and check data types
+df = df.astype(conversion_dictionary)
+df.info()
+```
+
+## Data processing
+
+### Collapsing categories
+Answers to question 9 ("How many years ago did you and your household first use a food bank?"") were collapsed before and after 2020. 
+```{python}
+# | include: false
+# Create dictionary of categories to collapse
+new_time_period = {
+    "less than 1 year ago": "After 2020",
+    "1 to 2 years ago": "After 2020",
+    "3 to 4 years ago": "After 2020",
+    "5 to 10 years ago": "Before 2020",
+    "more than 10 years ago": "Before 2020",
+    "prefer not to answer": "Unknown",
+}
+```
+
+```{python}
+# | include: false
+# Replace the values in the column and reset as a category
+df["time_period_clean"]= df["q009"].replace(new_time_period).astype("category")
+df["time_period_clean"].value_counts()
+```
+
+### Building an insecurity index
+
+Assumptions: 
+- Respondents were invited to fill the survey at a service point. This is not a random sample
+Limitation: 
+- could not validate the insecurity index
+
+We build a food insecurity index with questions 3 to 8. 
+
+We also reordered categories for question 03 (How often did the following occur in the last 12 months? “The food that I bought just didn’t last, and I didn’t have money to get more.”)
+
+```{python}
+# | include: false
+# Replace the values in the column and reset as a category
+df["q003"].cat.categories
+```
+
+```{python}
+# | include: false
+# set new order:
+new_order = [
+    "never true",
+    "sometimes true",
+    "often true",
+    "prefer not to answer",
+    "don’t know",
+]
+```
+```{python}
+categories_to_remove = ["prefer not to answer", "don’t know"]
+```
+```{python}
+# loop through each column
+for col in ["q003", "q004"]:
+    df[col + "_clean"] = df[col].cat.reorder_categories(new_order, ordered=True)
+    df[col + "_clean"] = df[col + "_clean"].cat.remove_categories(categories_to_remove)
+```
+```{python}
+# preview
+df["q003_clean"].cat.categories
+```
+
+```{python}
+new_q003_values = {
+"never true": 1,
+"sometimes true": 2,
+"often true": 3,
+}
+```
+
+
+## Data exploration
+
+The survey was available in four languages. Most repondents answered in English (83%), followed by French (9%), Arabic (6%), and Simplified Chinese (2%).
+
+```{python}
+# | echo: false
+df.q001.value_counts()
+```
+
+## Data visualisation
+
+```{python}
+# | include: false
+plt.style.use("default")
+```
+
+```{python}
+# | echo: false
+df.q001.value_counts().sort_values(ascending=True).plot.barh()
+plt.title("Survey Language of Respondents (Q1)");  # fmt: skip
+plt.xlabel("Number of respondents");  # fmt: skip
+plt.ylabel("");  # fmt: skip
+```
+
+```{python}
+# | echo: false
+df.q002.value_counts().sort_values(ascending=True).plot.barh()
+plt.title("Are the respondent's incomes enough to meet their food needs? (Q2)");  # fmt: skip
+plt.xlabel("Number of respondents");  # fmt: skip
+plt.ylabel("");  # fmt: skip
+```
+
+```{python}
+# | echo: false
+df.q003.value_counts().sort_values(ascending=True).plot.barh()
+plt.title(
+    "How often did respondents not have money to get more food in the last 12 months? (Q3)"
+);  # fmt: skip
+plt.xlabel("Number of respondents");  # fmt: skip
+plt.ylabel("");  # fmt: skip
+```
+
+```{python}
+# | echo: false
+df.q005.value_counts().sort_values(ascending=True).plot.barh()
+plt.title(
+    "Have respondents cut size or skipped meals because they did not have money for food in the last 12 months? (Q5)"
+);  # fmt: skip
+plt.xlabel("Number of respondents");  # fmt: skip
+plt.ylabel("");  # fmt: skip
+```
+
+```{python}
+# | echo: false
+df.q009.value_counts().sort_values(ascending=True).plot.barh()
+plt.title(
+    "How many years ago did the respondents and your household first use a food bank? (Q9)"
+);  # fmt: skip
+plt.xlabel("Number of respondents");  # fmt: skip
+plt.ylabel("");  # fmt: skip
+```
+
+# Data Analysis
+
+## Response rate
+
+
+# Interpretation
+
+## Limitation
+
+### Assumptions
+
+
+
+# Appendix - Survey questions
+
+---
+tbl-cap-location: top
+---
+: Summary of survey questions {#tbl-survey-questions}
+
+| No | Question | Data | Levels |
+|-|---------|-|-----|
+| id | Participant | ID | NA |
+| 001 | Language of survey | factor | Arabic; English; French; Simplified Chinese |
+| 002 | Is your income enough to meet your food needs? | factor | no; prefer not to answer; yes |
+| 003 | How often did the following occur in the last 12 months? "The food that I bought just didn't last, and I didn't have money to get more." | factor | don't know; never true; often true; prefer not to answer; sometimes true |
+| 004 | How often did the following occur in the last 12 months? I couldn't afford to eat nutritionally balanced meals. | factor | don't know; never true; often true; prefer not to answer; sometimes true |
+| 005 | In the last 12 months, did you ever cut the size of your meals or skip meals because there wasn't enough money for food? | factor | don't know; no; prefer not to answer; yes |
+| 006 | How often did this happen in the last 12 months? | factor | almost every month; did not happen; don't know; only 1 or 2 months; prefer not to answer; some months but not every month |
+| 007 | In the last 12 months, did you ever eat less than you felt you should because there wasn't enough money for food? | factor | don't know; no; prefer not to answer; yes |
+| 008 | In the last 12 months, were you ever hungry but didn't eat because there wasn't enough money for food? | factor | don't know; no; prefer not to answer; yes |
+| 009 | How many years ago did you and your household first use a food bank? | factor | 1 to 2 years ago; 3 to 4 years ago; 5 to 10 years ago; less than 1 year ago; more than 10 years ago; prefer not to answer |
+| 010 | How often do you visit a food bank? | factor | every 6 months; every two months; less than twice a year; once per month; other; prefer not to answer; two times per month |
+| 011 | Food programs include: food banks that serve a specific catchment region; meal programs, community kitchens / cooking programs; food pantries; community fridges; or any combination.
+| a | How often do you visit a food program that is not a food bank? | factor | daily; don't visit every month; every two months; I do not visit other food programs; less than every 6 months; more than once a week but less than daily; once a week; other; other (please specify); prefer not to answer'; two times a month |
+| b | How often do you visit a food program that is not a food bank? Other (please specify) | text |
+| 012 | Which food bank do you visit most often? | text |
+| 013 | How many different food programs do you visit in a month? | factor | 2 to 3; don't visit every month; more than 4; none of the above; one; prefer not to answer |
+| 014 | Do you have difficulty accessing food programs due to any of the following? Please select all that apply. 
+| a | none of the above | boolean |
+| b | language barriers | boolean |
+| c | physical inaccessibility | boolean |
+| d | safety concerns | boolean |
+| e | transportation barriers | boolean |
+| f | program hours of operation | boolean |
+| g | prefer not to answer | boolean |
+| h | Other (please specify) | text |
+| 015 | How long does it take you to get to the food program you visit most often? | factor | 30-60 minutes; 60-90 minutes; less than 30 minutes; more than 90 minutes; prefer not to answer | 
+| 016 | How do you get to the food program you visit most often? Please select all that apply. |
+| a | walk | boolean |
+| b | cycle | boolean |
+| c | public transportation | boolean |
+| d | private transportation | boolean |
+| e | prefer not to answer | boolean |
+| f | Other (please specify) | text |
+| 017 | Other than food, what services do you use at food programs? Please select all that apply. |
+| a | housing / utilities support | boolean |
+| b | computers or internet | boolean |
+| c | income tax clinics / financial literacy services | boolean |
+| d | legal services | boolean |
+| e | one on one service navigation | boolean |
+| f | employment/income support | boolean |
+| g | education services | boolean |
+| h | childcare | boolean |
+| i | none of the above | boolean |
+| j | prefer not to answer | boolean |
+| k | Other (please specify) | text | 
+| 018 | Are there any services you would like food programs to offer? | text |
+| 019 | Are you able to exercise regularly? | factor | no; prefer not to answer; yes |
+| 020 | If yes, how often do you exercise? | factor | 2-4 times a week; 5 or more times a week; daily; do not exercise; less than 1 time a week; prefer not to answer |
+| 021 | Do you have any of the following? Please select all that apply.
+| a | prefer not to answer | boolean |
+| b | diabetes | boolean |
+| c | high blood pressure | boolean |
+| d | heart disease | boolean |
+| e | no health conditions | boolean |
+| f | other (please specify) | text |
+| 022 | Are you pregnant? | factor | no; not applicable; prefer not to answer |
+| 023 | Do food programs meet your unique food needs? |
+| a | none of the above | boolean |
+| b | Yes | boolean |
+| c | No | boolean |
+| d | sometimes | boolean |
+| e | prefer not to answer | boolean |
+| f | Other (please specify) | text |
+| 024 | What types of food do you need? Please select all that apply. |
+| a | halal | boolean |
+| b | kosher | boolean |
+| c | vegan or vegetarian | boolean |
+| d | food for medical conditions | boolean |
+| e | allergen-free foods | boolean |
+| f | country food | boolean |
+| g | no special food | boolean |
+| h | prefer not to answer | boolean |
+| i | other (please specify) | text |
+| 025 | How old are you? | factor | 18-20; 21-30; 31-40; 41-50; 51-60; 61-70 ;over 70; prefer not to answer |
+| 026 | How many people live in your household, including yourself? | factor | 2 to 4; 5 to 7; more than 7; one ;prefer not to answer |
+| 027 | Do any children live in your household? | factor | no; prefer not to answer; yes |
+| 028 | Are you breastfeeding? |
+| a | Yes | boolean |
+| b | No | boolean |
+| c | not applicable |
+| d | prefer not to answer | boolean |
+| 029 | How many children under the age of 3 live in your household? | text |
+| 030 | How many children aged 3-5 live in your household? | text |
+| 031 | How many children aged 6-12 live in your household? | text |
+| 032 | How many children aged 13-17 live in your household? | text |
+| 033 | Which of the following best describes your highest level of education? Please select all that apply. |
+| a | some high school | boolean |
+| b | completed high school | boolean |
+| c | some college / university | boolean |
+| d | completed college / university | boolean |
+| e | apprenticeship training and trades | boolean |
+| f | some graduate education |
+| g | completed graduate education | boolean |
+| h | professional degree | boolean |
+| i | prefer not to answer | boolean |
+| 034 | Did you complete your highest level of education outside of Canada? | factor | no: prefer not to answer: received canadian equivalency: yes |
+| 035 | What is your status in Canada? | factor | applying for refugee status; canadian citizen; international student; migrant worker; other; permanent resident; prefer not to answer; refugee |
+| b | other (please specify) | text |
+| 036 | What is your gender? | factor | man; prefer not to answer; trans man; trans woman; woman |
+| b | other (please specify) | text |
+| 037 | How long have you lived in Canada? | factor | 1-4 years: 10 or more years: 5-9 years: canadian born; less than 1 year ago; not applicable; prefer not to answer |
+| 038 | Which of the following best describes your ethnic background? Please select all that apply. |
+| a | Indigenous (Inuit/First Nations/Metis) | boolean |
+| b | White/European | boolean |
+| c | Black/African/Caribbean (African, Afro-Caribbean, African-Canadian descent) | boolean |
+| d | South East Asian (Filipino, Vietnamese, Cambodian, Thai, other Southeast Asian descent) | boolean |
+| e | East Asian (Chinese, Korean, Japanese, Taiwanese descent) | boolean |
+| f | South Asian (e.g. East Indian, Pakistani, Sri Lankan, Indo-Caribbean, etc) | boolean |
+| g | Middle Eastern (Arab, Persian, West Asian descent, e.g. Afghan, Egyptian, Iranian, etc) | boolean |
+| h | Latin American (Latin American, Hispanic descent) | boolean |
+| i | I don't know | boolean |
+| j | Prefer not to answer | boolean |
+| k | Other (please specify) | text |
+| 039 | Are you currently living with any of the following? Please select all that apply.
+| a | none of the above | boolean |
+| b | physical disability | boolean |
+| c | chronic illness / pain | boolean |
+| d | disability | boolean |
+| e | developmental disability | boolean |
+| f | learning disability | boolean |
+| g | mental illness | boolean |
+| h | prefer not to answer | boolean |
+| i | other (please specify) | text |
+| 040 | Which of the following best describes where you currently live? Private rental housing | factor | group home/youth shelter; on the street; other; own home (mortgaged or fully owned); prefer not to answer; private rental housing; rooming house; shelter; social rental housing; supportive housing; with family or friends |
+| b | Other (please specify) | text |
+| 041 | In the past month, which of the following sources of income did you have? Please select all that apply. |
+| a | Employed at least 35 hours each week | boolean |
+| b | Employed less than 35 hours each week | boolean |
+| c | Ontario Disability Support Program (ODSP) | boolean |
+| d | Ontario Works (OW) | boolean |
+| e | Canada Emergency Response Benefit (CERB) | boolean |
+| f | Scholarship | boolean |
+| g | Student loans | boolean |
+| h | Employment Insurance (EI) | boolean |
+| i | Family support | boolean |
+| j | Spousal support | boolean |
+| k | Canada Child Benefit (CCB) | boolean |
+| l | Ontario Trillium Benefit (OTB) | boolean |
+| m | Canadian Pension Plan (CPP) | boolean |
+| n | Private pension | boolean |
+| o | Old Age Security (OAS) | boolean |
+| p | Workplace Safety and Insurance Board (WSIB) | boolean |
+| q | Short/long term disability | boolean |
+| r | Other government programs | boolean |
+| s | No income | boolean |
+| t | Prefer not to answer | boolean |
+| u | Other (please specify) | text |
+| 042 | Are there any comments or ideas you would like to share? | text |
+
+The questions are categorize [here](https://patch-diff.githubusercontent.com/raw/Data-For-Good-Ottawa/OFB_2023/pull/5.diff).
