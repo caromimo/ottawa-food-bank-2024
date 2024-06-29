@@ -139,11 +139,11 @@ HH_scores = {
 }
 
 # Create new column and replace the values
-df["HH3_scores"]= df["q003"].replace(HH_scores).astype("category")
+df["HH3_scores"]= df["q003"].replace(HH_scores)
 df["HH3_scores"].value_counts()
 
 # Create new column and replace the values
-df["HH4_scores"]= df["q004"].replace(HH_scores).astype("category")
+df["HH4_scores"]= df["q004"].replace(HH_scores)
 df["HH4_scores"].value_counts()
 ```
 
@@ -158,13 +158,13 @@ AD_scores = {
     "Prefer not to answer": 0,
 }
 
-df["AD1_scores"] = df["q005"].replace(AD_scores).astype("category")
+df["AD1_scores"] = df["q005"].replace(AD_scores)
 df["AD1_scores"].value_counts()
 
-df["AD2_scores"] = df["q007"].replace(AD_scores).astype("category")
+df["AD2_scores"] = df["q007"].replace(AD_scores)
 df["AD2_scores"].value_counts()
 
-df["AD3_scores"] = df["q008"].replace(AD_scores).astype("category")
+df["AD3_scores"] = df["q008"].replace(AD_scores)
 df["AD3_scores"].value_counts()
 ```
 
@@ -187,18 +187,18 @@ df["AD1a_scores"].value_counts()
 ```
 
 ```{python}
-# # | include: false
-# # Calculate the food security status
-# df["food_security_status"] = (
-#     df["HH3_scores"]
-#     + df["HH4_scores"]
-#     + df["AD1_scores"]
-#     + df["AD1a_scores"]
-#     + df["AD2_scores"]
-#     + df["AD3_scores"]
-# )
+# | include: false
+# Calculate the food security status
+df["food_security_status"] = (
+    df["HH3_scores"]
+    + df["HH4_scores"]
+    + df["AD1_scores"]
+    + df["AD1a_scores"]
+    + df["AD2_scores"]
+    + df["AD3_scores"]
+)
 
-# df["food_security_status"].value_counts()
+df["food_security_status"].value_counts()
 ```
 
 
