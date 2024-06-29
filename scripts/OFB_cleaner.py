@@ -137,6 +137,16 @@ class OFB_Cleaner:
             print("Removing invalid rows...")
             rows = filter(lambda item: item["q001"] != "NA", rows)
 
+            # remove invalid rows which have an ID of "NA"
+            print("Removing invalid rows for the food security status calculations")
+            rows = filter(lambda item: item["q002"] != "NA", rows)
+            rows = filter(lambda item: item["q003"] != "NA", rows)
+            rows = filter(lambda item: item["q004"] != "NA", rows)
+            rows = filter(lambda item: item["q005"] != "NA", rows)
+            rows = filter(lambda item: item["q006"] != "NA", rows)
+            rows = filter(lambda item: item["q007"] != "NA", rows)
+            rows = filter(lambda item: item["q008"] != "NA", rows)
+
         # remove the output file if it exists and open it for writing
         pathlib.Path(self.output_file_name).unlink(missing_ok=True)
 
