@@ -23,19 +23,59 @@ class OFB_Cleaner:
 
     def process_q003(self, fields: List[str]) -> List[str]:
         """
-        - capitalize occcurances of "prefer not to answer"
+        - capitalize occcurances of "prefer not to answer" and "don't know"
         """
         for index, field in enumerate(fields):
             if field == "prefer not to answer":
+                fields[index] = field.capitalize()
+            if field == "don't know":
                 fields[index] = field.capitalize()
         return fields
 
     def process_q004(self, fields: List[str]) -> List[str]:
         """
-        - capitalize occcurances of "prefer not to answer"
+        - capitalize occcurances of "prefer not to answer" and "never true"
         """
         for index, field in enumerate(fields):
             if field == "prefer not to answer":
+                fields[index] = field.capitalize()
+            if field == "never true":
+                fields[index] = field.capitalize()
+        return fields
+
+    def process_q005(self, fields: List[str]) -> List[str]:
+        """
+        - capitalize occcurances of "don't know"
+        """
+        for index, field in enumerate(fields):
+            if field == "don't know":
+                fields[index] = field.capitalize()
+        return fields
+
+    def process_q006(self, fields: List[str]) -> List[str]:
+        """
+        - capitalize occcurances of "don't know"
+        """
+        for index, field in enumerate(fields):
+            if field == "don't know":
+                fields[index] = field.capitalize()
+        return fields
+
+    def process_q007(self, fields: List[str]) -> List[str]:
+        """
+        - capitalize occcurances of "don't know"
+        """
+        for index, field in enumerate(fields):
+            if field == "don't know":
+                fields[index] = field.capitalize()
+        return fields
+
+    def process_q008(self, fields: List[str]) -> List[str]:
+        """
+        - capitalize occcurances of "don't know"
+        """
+        for index, field in enumerate(fields):
+            if field == "don't know":
                 fields[index] = field.capitalize()
         return fields
 
