@@ -56,8 +56,21 @@ print(Path.cwd())
 ```
 
 ```{python}
+raw = pd.read_csv("../data/raw/neighbour_survey_clean-2024-06-14.csv")
+
 df = pd.read_csv("../data/processed/cleaned_neighbour_survey.csv")
 ```
+
+## Data clearing
+
+The data was first clean to 
+- remove columns with NAs in the first 8 questions 
+    q1: suggests something is wrong with the data
+    q2 to 8: to be able to calculate the food security index without skewing the data
+
+Note that the above criteria for cleaning leaves us with 2812 rows of the initial 4054 rows, so approximately 69% of the initial dataset.
+
+
 
 ## Data exploration
 
@@ -127,6 +140,8 @@ Limitation:
 
 We also reordered categories for question 03 (How often did the following occur in the last 12 months? “The food that I bought just didn’t last, and I didn’t have money to get more.”)
 
+To build an index, we need to have complete dataset for the six questions contributing to the food security index
+
 ```{python}
 # | include: false
 # Categories for questions 3 and 4
@@ -182,14 +197,14 @@ AD1a_scores = {
 }
 
 # Create new column and replace the values
-df["AD1a_scores"] = df["q006"].replace(AD1a_scores).astype("category")
+df["AD1a_scores"] = df["q006"].replace(AD1a_scores)
 df["AD1a_scores"].value_counts()
 ```
 
 ```{python}
 # | include: false
 # Calculate the food security status
-df["food_security_status_score"] = (
+df["food_security_score"] = (
     df["HH3_scores"]
     + df["HH4_scores"]
     + df["AD1_scores"]
@@ -198,7 +213,7 @@ df["food_security_status_score"] = (
     + df["AD3_scores"]
 )
 
-df["food_security_status_score"].value_counts()
+df["food_security_score"].value_counts()
 
 food_security_status = {
     0: "High/marginal food security",
@@ -211,10 +226,13 @@ food_security_status = {
 }
 
 df["food_security_status"] = (
-    df["food_security_status_score"].replace(food_security_status).astype("category")
+    df["food_security_score"].replace(food_security_status).astype("category")
 )
 df["food_security_status"].value_counts()
-
+df["food_security_status"].value_counts(normalize=True)
+```
+```{python}
+df.to_csv('../data/processed/food_security_status_sub_sample.csv')
 ```
 
 
