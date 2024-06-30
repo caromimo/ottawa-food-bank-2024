@@ -79,6 +79,27 @@ class OFB_Cleaner:
                 fields[index] = field.capitalize()
         return fields
 
+    def process_q035a(self, fields: List[str]) -> List[str]:
+        """
+        - capitalize several options
+        """
+        for index, field in enumerate(fields):
+            if field == "permanent resident":
+                fields[index] = field.capitalize()
+            if field == "canadian citizen":
+                fields[index] = field.capitalize()
+            if field == "refugee":
+                fields[index] = field.capitalize()
+            if field == "applying for refugee status":
+                fields[index] = field.capitalize()
+            if field == "international student":
+                fields[index] = field.capitalize()
+            if field == "migrant worker":
+                fields[index] = field.capitalize()
+            if field == "other":
+                fields[index] = field.capitalize()
+        return fields
+
     def normalize(self, fields: List[str]) -> List[str]:
         """
         - normalize lowercase "na" or "Na" to "NA"
