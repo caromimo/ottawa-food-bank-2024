@@ -71,6 +71,11 @@ The data was first clean to
 Note that the above criteria for cleaning leaves us with 2812 rows of the initial 4054 rows, so approximately 69% of the initial dataset.
 
 
+```{python}
+# | include: false
+# Collapsing categories together in q035a
+df["q035a"].replace("Other (please specify)", "Other", inplace=True)
+```
 
 ## Data exploration
 
