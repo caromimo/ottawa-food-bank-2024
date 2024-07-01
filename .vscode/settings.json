@@ -1,3 +1,4 @@
 {
-    "quarto.render.renderOnSave": false
+    "quarto.render.renderOnSave": false,
+    "python.REPL.enableREPLSmartSend": false
 }
