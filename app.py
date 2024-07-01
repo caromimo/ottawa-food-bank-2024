@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.io as pio
 from dash import Dash, dcc, html, Input, Output, callback
+import dash_bootstrap_components as dbc
 
 # import data
 df = pd.read_csv("./data/processed/food_security_status_sub_sample.csv")
@@ -11,32 +12,46 @@ df = pd.read_csv("./data/processed/food_security_status_sub_sample.csv")
 fig = px.histogram(df, y="q035a")
 
 # initialise the app
-app = Dash(__name__)
+app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 # app layout
-app.layout = html.Div(
+app.layout = html.Main(
     [
-        html.Div(children="Ottawa Food Bank - 2024 Neighbour Survey Analysis"),
+        html.H1(children="Ottawa Food Bank - 2024 Neighbour Survey Analysis"),
         html.Hr(),
-        dcc.Dropdown(
-            id="food_security_status_dropdown",
-            options=[
-                {
-                    "label": "High/marginal food security",
-                    "value": "High/marginal food security",
-                },
-                {"label": "Low food security", "value": "Low food security"},
-                {"label": "Very low food security", "value": "Very low food security"},
+        dbc.Row(
+            [
+                dbc.Col(
+                    dcc.Dropdown(
+                        id="food_security_status_dropdown",
+                        options=[
+                            {
+                                "label": "High or marginal food security",
+                                "value": "High/marginal food security",
+                            },
+                            {
+                                "label": "Low food security",
+                                "value": "Low food security",
+                            },
+                            {
+                                "label": "Very low food security",
+                                "value": "Very low food security",
+                            },
+                        ],
+                        value="Very low food security",
+                    )
+                ),
+                dbc.Col(
+                    dcc.Dropdown(
+                        id="question_dropdown",
+                        options=[
+                            {"label": "Survey language", "value": "q001"},
+                            {"label": "Status in Canada", "value": "q035a"},
+                        ],
+                        value="q001",
+                    )
+                ),
             ],
-            value="Very low food security",
-        ),
-        dcc.Dropdown(
-            id="question_dropdown",
-            options=[
-                {"label": "Language", "value": "q001"},
-                {"label": "Status in Canada", "value": "q035a"},
-            ],
-            value="q001",
         ),
         dcc.Graph(figure={}, id="graph1"),
     ]
@@ -46,11 +61,14 @@ app.layout = html.Div(
 # add controls to  build the interactions
 @callback(
     Output(component_id="graph1", component_property="figure"),
-    # Input(component_id="food_security_status_dropdown", component_property="value"),
+    Input(component_id="food_security_status_dropdown", component_property="value"),
     Input(component_id="question_dropdown", component_property="value"),
 )
-def update_graph(question_dropdown):
-    fig = px.histogram(df, y=question_dropdown)
+def update_graph(food_security_status_dropdown, question_dropdown):
+    fig = px.histogram(
+        data_frame=df[df["food_security_status"] == food_security_status_dropdown],
+        y=question_dropdown,
+    )
     return fig
 
 
