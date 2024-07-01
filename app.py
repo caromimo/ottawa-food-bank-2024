@@ -1,75 +1,59 @@
-# ------------------------------------------------------------------------------
 # import librairies
 import pandas as pd
 import plotly.express as px
+import plotly.io as pio
+from dash import Dash, dcc, html, Input, Output, callback
 
-# import plotly.graph_objects as go
-
-from dash import Dash, dcc, html, Input, Output
-
-
-app = Dash(__name__)
-
-
-# ------------------------------------------------------------------------------
 # import data
 df = pd.read_csv("./data/processed/food_security_status_sub_sample.csv")
 
-# ------------------------------------------------------------------------------
+# graphs
+fig = px.histogram(df, y="q035a")
+
+# initialise the app
+app = Dash(__name__)
+
 # app layout
 app.layout = html.Div(
     [
-        html.H1(
-            "Ottawa Food Bank - 2024 Neighbour Survey Analysis",
-            style={"text-align": "center"},
+        html.Div(children="Ottawa Food Bank - 2024 Neighbour Survey Analysis"),
+        html.Hr(),
+        dcc.Dropdown(
+            id="food_security_status_dropdown",
+            options=[
+                {
+                    "label": "High/marginal food security",
+                    "value": "High/marginal food security",
+                },
+                {"label": "Low food security", "value": "Low food security"},
+                {"label": "Very low food security", "value": "Very low food security"},
+            ],
+            value="Very low food security",
         ),
         dcc.Dropdown(
-            id="language_selection",
+            id="question_dropdown",
             options=[
-                {"label": "Arabic", "value": "Arabic"},
-                {"label": "English", "value": "English"},
-                {"label": "French", "value": "French"},
-                {"label": "Simplified Chinese", "value": "Simplified Chinese"},
+                {"label": "Language", "value": "q001"},
+                {"label": "Status in Canada", "value": "q035a"},
             ],
-            multi=False,
-            value="English",
-            style={"width": "50%"},
+            value="q001",
         ),
-        html.Div(id="output_container", children=[]),
-        html.Br(),
-        dcc.Graph(id="language_plot", figure={}),
+        dcc.Graph(figure={}, id="graph1"),
     ]
 )
 
 
-# ------------------------------------------------------------------------------
-# connect the Plotly graphs with Dash Components
-@app.callback(
-    [
-        Output(component_id="output_container", component_property="children"),
-        Output(component_id="language_plot", component_property="figure"),
-    ],
-    [Input(component_id="language_selection", component_property="value")],
+# add controls to  build the interactions
+@callback(
+    Output(component_id="graph1", component_property="figure"),
+    # Input(component_id="food_security_status_dropdown", component_property="value"),
+    Input(component_id="question_dropdown", component_property="value"),
 )
-def update_graph(language_selection):
-    print(language_selection)
-    print(type(language_selection))
-
-    container = "The language chosen by user was: {}".format(language_selection)
-
-    dff = df.copy()
-    dff = dff[dff["q001"] == language_selection]
-
-    # Plotly Express
-    fig = px.histogram(
-        data_frame=dff,
-        x="food_security_score",
-    )
-
-    return container, fig
+def update_graph(question_dropdown):
+    fig = px.histogram(df, y=question_dropdown)
+    return fig
 
 
-# ------------------------------------------------------------------------------
-# run server
+# run the app
 if __name__ == "__main__":
     app.run_server(debug=True)
