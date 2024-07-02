@@ -70,13 +70,6 @@ The data was first clean to
 
 Note that the above criteria for cleaning leaves us with 2812 rows of the initial 4054 rows, so approximately 69% of the initial dataset.
 
-
-```{python}
-# | include: false
-# Collapsing categories together in q035a
-df["q035a"].replace("Other (please specify)", "Other", inplace=True)
-```
-
 ## Data exploration
 
 ```{python}
@@ -147,99 +140,7 @@ We also reordered categories for question 03 (How often did the following occur 
 
 To build an index, we need to have complete dataset for the six questions contributing to the food security index
 
-```{python}
-# | include: false
-# Categories for questions 3 and 4
-HH_scores = {
-    "Sometimes true": 1,
-    "Often true": 1,
-    "Never true": 0,
-    "Prefer not to answer": 0,
-    "Don't know": 0,
-}
-
-# Create new column and replace the values
-df["HH3_scores"]= df["q003"].replace(HH_scores)
-df["HH3_scores"].value_counts()
-
-# Create new column and replace the values
-df["HH4_scores"]= df["q004"].replace(HH_scores)
-df["HH4_scores"].value_counts()
-```
-
-
-```{python}
-# | include: false
-# Categories for question 5, 7 and 8
-AD_scores = {
-    "Yes": 1,
-    "No": 0,
-    "Don't know": 0,
-    "Prefer not to answer": 0,
-}
-
-df["AD1_scores"] = df["q005"].replace(AD_scores)
-df["AD1_scores"].value_counts()
-
-df["AD2_scores"] = df["q007"].replace(AD_scores)
-df["AD2_scores"].value_counts()
-
-df["AD3_scores"] = df["q008"].replace(AD_scores)
-df["AD3_scores"].value_counts()
-```
-
-
-```{python}
-# | include: false
-# Calculating the food security status
-AD1a_scores = {
-    "Some months but not every month": 1,
-    "Almost every month": 1,
-    "Only 1 or 2 months": 0,
-    "Don't know": 0,
-    "Prefer not to answer": 0,
-    "Never true": 0,
-}
-
-# Create new column and replace the values
-df["AD1a_scores"] = df["q006"].replace(AD1a_scores)
-df["AD1a_scores"].value_counts()
-```
-
-```{python}
-# | include: false
-# Calculate the food security status
-df["food_security_score"] = (
-    df["HH3_scores"]
-    + df["HH4_scores"]
-    + df["AD1_scores"]
-    + df["AD1a_scores"]
-    + df["AD2_scores"]
-    + df["AD3_scores"]
-)
-
-df["food_security_score"].value_counts()
-
-food_security_status = {
-    0: "High/marginal food security",
-    1: "High/marginal food security",
-    2: "Low food security",
-    3: "Low food security",
-    4: "Low food security",
-    5: "Very low food security",
-    6: "Very low food security",
-}
-
-df["food_security_status"] = (
-    df["food_security_score"].replace(food_security_status).astype("category")
-)
-df["food_security_status"].value_counts()
-df["food_security_status"].value_counts(normalize=True)
-```
-```{python}
-df.to_csv('../data/processed/food_security_status_sub_sample.csv')
-```
-
+The script OFB_calculator handles those steps.
 
 ## Data exploration
 
