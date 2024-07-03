@@ -43,6 +43,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import plotly.express as px
 import pandas as pd
+import plotly.graph_objects as go
 ```
 
 ## Data import
@@ -58,7 +59,7 @@ print(Path.cwd())
 ```{python}
 raw = pd.read_csv("../data/raw/neighbour_survey_clean-2024-06-14.csv")
 
-df = pd.read_csv("../data/processed/cleaned_neighbour_survey.csv")
+df = pd.read_csv("../data/processed/food_security_status_sub_sample.csv")
 ```
 
 ## Data clearing
@@ -157,6 +158,29 @@ df.q001.value_counts()
 # | include: false
 plt.style.use("default")
 ```
+
+
+```{python}
+df.food_security_score.value_counts()
+px.histogram(df, "food_security_status")
+```
+
+
+```{python}
+import plotly.graph_objects as go
+fig = go.Figure(
+    data=[go.Bar(
+        x=df.food_security_status.value_counts().index,
+        y=df.food_security_status.value_counts()
+        )
+        ],
+    layout_title_text="Number of respondents per categories"
+)
+fig
+```
+
+
+
 
 ```{python}
 # | echo: false

@@ -95,4 +95,6 @@ df["food_security_status"].value_counts()
 df["food_security_status"].value_counts(normalize=True)
 
 # save the new df
-df.to_csv("./data/processed/food_security_status_sub_sample.csv")
+df.to_csv(
+    "./data/processed/food_security_status_sub_sample.csv", header=True, index=False
+)

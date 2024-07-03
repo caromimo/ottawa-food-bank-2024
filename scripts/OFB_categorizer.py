@@ -10,13 +10,25 @@ SPDX-License-Identifier: MIT
 import pandas as pd
 
 # import data
-df = pd.read_csv("./data/processed/food_security_status_sub_sample.csv")
+df = pd.read_csv("./data/processed/cleaned_neighbour_survey.csv")
 
 # collapsing categories together in q035a
-df["q035a"] = df["q035a"].replace("Other (please specify)", "Other")
-df["q035a"] = df["q035a"].replace("Other", "Others and prefer not to answer")
-df["q035a"] = df["q035a"].replace("Prefer not to answer", "Others and not to answer")
-
+df.loc[df["q035a"] == "Other (please specify)", "q035a"] = (
+    "Prefer not to answer or other"
+)
+df.loc[df["q035a"] == "Prefer not to answer", "q035a"] = "Prefer not to answer or other"
+df.loc[df["q035a"] == "Other", "q035a"] = "Prefer not to answer or other"
+df.loc[df["q035a"] == "Refugee", "q035a"] = "Refugee (confirmed and applying)"
+df.loc[df["q035a"] == "Applying for refugee status", "q035a"] = (
+    "Refugee (confirmed and applying)"
+)
+# df["q035a"] = df["q035a"].map(
+#     {
+#         "Other (please specify)": "Prefer not to answer or other",
+#         "Prefer not to answer": "Prefer not to answer or other",
+#         "Other": "Prefer not to answer or other",
+#     }
+# )
 
 # saved processed data to csv file
-df.to_csv("./data/processed/cleaned_neighbour_survey.csv", header=True)
+df.to_csv("./data/processed/cleaned_neighbour_survey.csv", header=True, index=False)
