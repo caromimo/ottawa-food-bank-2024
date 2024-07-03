@@ -78,13 +78,13 @@ df["food_security_score"].value_counts()
 
 # assign food security status based on score
 food_security_status = {
-    0: "High/marginal food security",
-    1: "High/marginal food security",
-    2: "Low food security",
-    3: "Low food security",
-    4: "Low food security",
-    5: "Very low food security",
-    6: "Very low food security",
+    0: "High",
+    1: "Marginal",
+    2: "Low",
+    3: "Low",
+    4: "Low",
+    5: "Very low",
+    6: "Very low",
 }
 
 # make the food security status categories
