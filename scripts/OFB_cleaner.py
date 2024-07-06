@@ -79,6 +79,19 @@ class OFB_Cleaner:
                 fields[index] = field.capitalize()
         return fields
 
+    def process_q009(self, fields: List[str]) -> List[str]:
+        """
+        - capitalize occcurances of "more than 10 years ago", "less than 1 year ago", and "prefer not to answer"
+        """
+        for index, field in enumerate(fields):
+            if field == "more than 10 years ago":
+                fields[index] = field.capitalize()
+            if field == "less than 1 year ago":
+                fields[index] = field.capitalize()
+            if field == "prefer not to answer":
+                fields[index] = field.capitalize()
+        return fields
+
     def process_q035a(self, fields: List[str]) -> List[str]:
         """
         - capitalize several options
@@ -157,16 +170,6 @@ class OFB_Cleaner:
             # remove invalid rows which have an ID of "NA"
             print("Removing invalid rows...")
             rows = filter(lambda item: item["q001"] != "NA", rows)
-
-            # remove invalid rows which have an ID of "NA"
-            print("Removing invalid rows for the food security status calculations")
-            rows = filter(lambda item: item["q002"] != "NA", rows)
-            rows = filter(lambda item: item["q003"] != "NA", rows)
-            rows = filter(lambda item: item["q004"] != "NA", rows)
-            rows = filter(lambda item: item["q005"] != "NA", rows)
-            rows = filter(lambda item: item["q006"] != "NA", rows)
-            rows = filter(lambda item: item["q007"] != "NA", rows)
-            rows = filter(lambda item: item["q008"] != "NA", rows)
 
         # remove the output file if it exists and open it for writing
         pathlib.Path(self.output_file_name).unlink(missing_ok=True)

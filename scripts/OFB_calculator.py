@@ -15,6 +15,14 @@ import pandas as pd
 # import data
 df = pd.read_csv("./data/processed/cleaned_neighbour_survey.csv")
 
+# keep respondents who answered all questions between 3 and 8 inclusively
+df = df[df.q003.notnull()]
+df = df[df.q004.notnull()]
+df = df[df.q005.notnull()]
+df = df[df.q006.notnull()]
+df = df[df.q007.notnull()]
+df = df[df.q008.notnull()]
+
 # set categories for questions 3 and 4
 HH_scores = {
     "Sometimes true": 1,
