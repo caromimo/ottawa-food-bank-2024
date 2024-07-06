@@ -15,9 +15,7 @@ jupyter: python3
 
 The [Data For Good Ottawa](https://ottawa.dataforgood.ca/) is a organisation of volunteers who want to use their data skills for good and to help their communities.
 
-For their summer 2024 event, Data For Good Ottawa paired with the [Ottawa Food Bank](https://www.ottawafoodbank.ca/) (OFB) to gain insight about their users. To do so, the OFB invited food program visitors to answer a [Neighbour Survey](https://www.ottawafoodbank.ca/neighbourhood-survey-2024/) (NS) in exchange of a $10 grocery certificate.
-
-Over 4000 participants, between April and May 2024, took part to the online survey which included 42 questions related to food security, food bank experience, unique needs, health, wellbeing, and demographics. All survey questions are includes in the appendix (see @tbl-survey-questions.)
+For their summer 2024 event, Data For Good Ottawa paired with the [Ottawa Food Bank](https://www.ottawafoodbank.ca/) (OFB) to gain insight about their users. The OFB invited food program visitors to answer a [Neighbour Survey](https://www.ottawafoodbank.ca/neighbourhood-survey-2024/) in exchange of a $10 grocery certificate. Over 4000 participants, between April and May 2024, took part to the online survey which included 42 questions related to food security, food bank experience, unique needs, health, wellbeing, and demographics. All survey questions are includes in the appendix (see @tbl-survey-questions.)
 
 The research question posed by the OFB is *"What is the relationship between food security status and health/demographics/needs in our sample?"* 
 
@@ -32,18 +30,18 @@ The concept of food security is often attributed to the 1996 World Food Summit a
 
 - *Stability*: To be food secure, a population, household or individual must have access to adequate food at all times. They should not risk losing access to food as a consequence of sudden shocks (e.g. an economic or climatic crisis) or cyclical events (e.g. seasonal food insecurity).
 
-# Exploratory Data Analysis
+# Data wrangling
 
-The code, but not the data, for this page is available on [GitHub](https://github.com/caromimo/ottawa-food-bank-2024). This section includes some initial data preparation and exploration of the NS results.
+The code, but not the data, for this page is available on [GitHub](https://github.com/caromimo/ottawa-food-bank-2024). This section includes some initial data preparation and exploration of the survey results.
 
 ## Setup
 
 ```{python}
 import numpy as np
-import matplotlib.pyplot as plt
-import plotly.express as px
 import pandas as pd
+import plotly.express as px
 import plotly.graph_objects as go
+import plotly.io as pio
 ```
 
 ## Data import
@@ -52,39 +50,40 @@ OFB shared data with DFG volunteers as csv files.
 
 ```{python}
 # | include: false
-from pathlib import Path
-print(Path.cwd())
-```
-
-```{python}
 raw = pd.read_csv("../data/raw/neighbour_survey_clean-2024-06-14.csv")
+
+df_all = pd.read_csv("../data/processed/cleaned_neighbour_survey.csv")
 
 df = pd.read_csv("../data/processed/food_security_status_sub_sample.csv")
 ```
 
-## Data clearing
+## Cleaning data
 
-The data was first clean to 
-- remove columns with NAs in the first 8 questions 
-    q1: suggests something is wrong with the data
-    q2 to 8: to be able to calculate the food security index without skewing the data
+The data was first cleaned to:
 
-Note that the above criteria for cleaning leaves us with 2812 rows of the initial 4054 rows, so approximately 69% of the initial dataset.
+- Normalize answers with capital letters ("prefer not the answer" and "Prefer not to answer").
+- Normalize lowercase "na" or "Na" to "NA".
+- Remove rows with an ID of NA.
 
-## Data exploration
+The above steps are implemented by running the OFB_cleaner.py script on the raw dataframe.
 
-```{python}
-# | include: false
-df.info()
-df.head()
-```
+Additional issues noted to the OFB:
 
-```{python}
-# | include: false
-df.describe()
-```
+- Answers for some respondent appears to have been broken on two rows in the dataset. 
+- There are blocks of NAs in the datasets (several consecutive columns and rows)
 
-## Data collapsing
+## Collapsing categories
+
+In some instances, it makes sense to collapse some categories for a questions when there are a lot of categories. Note that those decisions are subjective hence the importance to document them.
+
+For instance:
+
+- Answers to question 9 were collapsed in another column to "Before 2020" and "After 2020" to explore impacts of the COVID-19 pandemic
+- Answers to question 35a included "Other", "Other (please specify)", and "Prefer not to answer" which were collapsed to "Prefer not to answer or other"; additionally "Refugee" and "Applying for refugee status" were collapsed to "Refugee (confirmed and applying)"
+
+The above steps are implemented by running the OFB_categorizer.py script on the cleaned dataframe.
+
+## Converting data to categories (TBR)
 
 As we are dealing with categorical data, we will convert strings to categories. 
 
@@ -102,144 +101,112 @@ df = df.astype(conversion_dictionary)
 df.info()
 ```
 
-## Data processing
-
-### Collapsing categories
-Answers to question 9 ("How many years ago did you and your household first use a food bank?"") were collapsed before and after 2020. 
-```{python}
-# | include: false
-# Create dictionary of categories to collapse
-new_time_period = {
-    "less than 1 year ago": "After 2020",
-    "1 to 2 years ago": "After 2020",
-    "3 to 4 years ago": "After 2020",
-    "5 to 10 years ago": "Before 2020",
-    "more than 10 years ago": "Before 2020",
-    "prefer not to answer": "Unknown",
-}
-```
-
-```{python}
-# | include: false
-# Replace the values in the column and reset as a category
-df["time_period_clean"]= df["q009"].replace(new_time_period).astype("category")
-df["time_period_clean"].value_counts()
-```
-
-### Six-Item Food Security Scale
+## Calculating food security scores
 
 The six-item short form of the survey module and the associated Six-Item Food Security Scale were developed by researchers at the National Center for Health Statistics ([HSSSM](https://www.ers.usda.gov/media/8282/short2012.pdf)). The questions in the six item short form correspond to questions 3 to 8, inclusively in the neighborhood survey.
 
-Building an insecurity index
+We calculated the food security scores and determined the food security status by implementing the following steps:
 
-Assumptions: 
-- Respondents were invited to fill the survey at a service point. This is not a random sample
-Limitation: 
-- could not validate the insecurity index
+- Filter out all respondents that had not answered all questions 3 to 8 inclusively - if the NAs were converted to 0s, it would skew the results towards more food security - the initial datasets had 4054 rows, after removing the above, there are 2816 rows left, so approximately 69% of the initial dataset
+- Create new columns with scores are per the [HSSSM](https://www.ers.usda.gov/media/8282/short2012.pdf).
+- Calculate the food security score (sum of scores for questions 3 to 8)
+- Assign the food security status based on food security score as per the [Household Food Security Survey Module Quick Guide](https://www.nutritionincentivehub.org/media/u0hbzjr2/food-security-quick-guide_final.pdf).
 
-We also reordered categories for question 03 (How often did the following occur in the last 12 months? “The food that I bought just didn’t last, and I didn’t have money to get more.”)
+The above steps are implemented by running the OFB_calculator.py script on the cleaned dataframe and saved as a sub-sample of all answers.
 
-To build an index, we need to have complete dataset for the six questions contributing to the food security index
-
-The script OFB_calculator handles those steps.
-
-## Data exploration
+# Data visualization
 
 The survey was available in four languages. Most repondents answered in English (83%), followed by French (9%), Arabic (6%), and Simplified Chinese (2%).
 
 ```{python}
 # | echo: false
-df.q001.value_counts()
-```
-
-## Data visualisation
-
-```{python}
-# | include: false
-plt.style.use("default")
-```
-
-
-```{python}
-df.food_security_score.value_counts()
-px.histogram(df, "food_security_status")
-```
-
-
-```{python}
-import plotly.graph_objects as go
 fig = go.Figure(
-    data=[go.Bar(
-        x=df.food_security_status.value_counts().index,
-        y=df.food_security_status.value_counts()
-        )
-        ],
-    layout_title_text="Number of respondents per categories"
+    data=[
+        go.Bar(x=df_all["q001"].value_counts().index, y=df_all["q001"].value_counts())
+    ],
+    layout_title_text="Survey language (Q1, n=4054)",
+)
+
+fig
+```
+
+<br />
+
+Most respondents (almost 84%) reported not having enough money to meet their food needs.
+
+```{python}
+# | echo: false
+
+fig = go.Figure(
+    data=[go.Bar(x=df_all.q002.value_counts().index, y=df_all.q001.value_counts())],
+    layout_title_text="Is your income enough to meet your food needs? (Q2, n=4054)",
 )
 fig
 ```
 
-
-
+Of the respondents who answered all questions, the distribution of the food security scores was as follow: 
 
 ```{python}
 # | echo: false
-df.q001.value_counts().sort_values(ascending=True).plot.barh()
-plt.title("Survey Language of Respondents (Q1)");  # fmt: skip
-plt.xlabel("Number of respondents");  # fmt: skip
-plt.ylabel("");  # fmt: skip
+px.histogram(df, x="food_security_score", nbins=7)
+```
+
+Which translates to the following food security status. Most respondents (87%) have very low food security.
+
+```{python}
+# | echo: false
+
+fig = go.Figure(
+    data=[
+        go.Bar(
+            x=df.food_security_status.value_counts().index,
+            y=df.food_security_status.value_counts(),
+        )
+    ],
+    layout_title_text="Food security status (n=2816)",
+)
+fig
 ```
 
 ```{python}
 # | echo: false
-df.q002.value_counts().sort_values(ascending=True).plot.barh()
-plt.title("Are the respondent's incomes enough to meet their food needs? (Q2)");  # fmt: skip
-plt.xlabel("Number of respondents");  # fmt: skip
-plt.ylabel("");  # fmt: skip
+
+fig = go.Figure(
+    data=[
+        go.Bar(
+            x=df_all.q009.value_counts().index,
+            y=df_all.q009.value_counts(),
+        )
+    ],
+    layout_title_text="How many years ago did you and your household first use a food bank? (Q9, n=4004)",
+)
+fig
 ```
 
+Most respondents (over 80%) reported having started to use a food bank after 2020, so since the COVID-19 pandemic.
 ```{python}
 # | echo: false
-df.q003.value_counts().sort_values(ascending=True).plot.barh()
-plt.title(
-    "How often did respondents not have money to get more food in the last 12 months? (Q3)"
-);  # fmt: skip
-plt.xlabel("Number of respondents");  # fmt: skip
-plt.ylabel("");  # fmt: skip
+
+fig = go.Figure(
+    data=[
+        go.Bar(
+            x=df_all.time_period_clean.value_counts().index,
+            y=df_all.time_period_clean.value_counts(),
+        )
+    ],
+    layout_title_text="How many years ago did you and your household first use a food bank? (Q9, n=4037)",
+)
+fig
 ```
-
-```{python}
-# | echo: false
-df.q005.value_counts().sort_values(ascending=True).plot.barh()
-plt.title(
-    "Have respondents cut size or skipped meals because they did not have money for food in the last 12 months? (Q5)"
-);  # fmt: skip
-plt.xlabel("Number of respondents");  # fmt: skip
-plt.ylabel("");  # fmt: skip
-```
-
-```{python}
-# | echo: false
-df.q009.value_counts().sort_values(ascending=True).plot.barh()
-plt.title(
-    "How many years ago did the respondents and your household first use a food bank? (Q9)"
-);  # fmt: skip
-plt.xlabel("Number of respondents");  # fmt: skip
-plt.ylabel("");  # fmt: skip
-```
-
-# Data Analysis
-
-## Response rate
-
 
 # Interpretation
 
-## Limitation
+## Assumptions and limitations
 
-### Assumptions
-
-
+One most note that: 
+- The response rate of this survey is unknown.
+- Respondents to this survey do not represent a random sample of the population, hence results cannot be extrapolated to the whole population. 
+- The food index security scores could not be validated with further survey.
 
 # Appendix - Survey questions
 
