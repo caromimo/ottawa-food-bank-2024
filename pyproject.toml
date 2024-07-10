@@ -24,7 +24,7 @@ distribution = false
 
 [tool.pdm.scripts]
 render = "quarto render scripts/index.qmd"
-clean = "python scripts/OFB_cleaner.py --input ./data/raw/neighbour_survey_clean-2024-06-14.csv --output ./data/processed/cleaned_neighbour_survey.csv"
+clean = "python extern/OFB_Cleaner/OFB_cleaner.py --input ./data/raw/neighbour_survey_clean-2024-06-14.csv --output ./data/processed/cleaned_neighbour_survey.csv"
 categorize = "python scripts/OFB_categorizer.py"
 calculate = "python scripts/OFB_calculator.py"
 all = { composite = ["clean", "categorize", "calculate"] }
