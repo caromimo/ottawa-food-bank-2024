@@ -19,16 +19,7 @@ For their summer 2024 event, Data For Good Ottawa paired with the [Ottawa Food B
 
 The research question posed by the OFB is *"What is the relationship between food security status and health/demographics/needs in our sample?"* 
 
-The concept of food security is often attributed to the 1996 World Food Summit and defined as "Food security exists when all people, at all times, have physical and economic access to sufﬁcient, safe and nutritious food that meets their dietary needs and food preferences for an active and healthy life” [FAO, 2006](https://www.fao.org/fileadmin/templates/faoitaly/documents/pdf/pdf_Food_Security_Cocept_Note.pdf). This definition includes the following dimensions:
-
-- *Food availability*: The availability of sufﬁcient quantities of food of appropriate quality, supplied through domestic production or imports
-(including food aid).
-
-- *Food access*: Access by individuals to adequate resources (entitlements) for acquiring appropriate foods for a nutritious diet. Entitlements are deﬁned as the set of all commodity bundles over which a person can establish command given the legal, political, economic and social arrangements of the community in which they live (including traditional rights such as access to common resources).
-
-- *Utilization*: Utilization of food through adequate diet, clean water, sanitation and health care to reach a state of nutritional well-being where all physiological needs are met. This brings out the importance of non-food inputs in food security.
-
-- *Stability*: To be food secure, a population, household or individual must have access to adequate food at all times. They should not risk losing access to food as a consequence of sudden shocks (e.g. an economic or climatic crisis) or cyclical events (e.g. seasonal food insecurity).
+The concept of food security is often attributed to the 1996 World Food Summit and defined as "Food security exists when all people, at all times, have physical and economic access to sufﬁcient, safe and nutritious food that meets their dietary needs and food preferences for an active and healthy life” [FAO, 2006](https://www.fao.org/fileadmin/templates/faoitaly/documents/pdf/pdf_Food_Security_Cocept_Note.pdf).
 
 # Data wrangling
 
