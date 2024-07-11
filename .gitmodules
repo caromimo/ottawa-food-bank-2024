@@ -1,6 +1,3 @@
-[submodule "OFB_Cleaner"]
-	path = OFB_Cleaner
-	url = https://codeberg.org/asmaloney/OFB_Cleaner
 [submodule "extern/OFB_Cleaner"]
 	path = extern/OFB_Cleaner
 	url = https://codeberg.org/asmaloney/OFB_Cleaner
