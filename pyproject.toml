@@ -27,4 +27,6 @@ render = "quarto render scripts/index.qmd"
 clean = "python extern/OFB_Cleaner/OFB_cleaner.py --input ./data/raw/neighbour_survey_clean-2024-06-14.csv --output ./data/processed/cleaned_neighbour_survey.csv"
 categorize = "python scripts/OFB_categorizer.py"
 calculate = "python scripts/OFB_calculator.py"
-all = { composite = ["clean", "categorize", "calculate"] }
+calculatewonas = "python scripts/OFB_calculator_wo_nas.py"
+all_wo_nas = { composite = ["clean", "categorize", "calculate"] }
+all = { composite = ["clean", "categorize", "calculatewonas"] }

@@ -15,13 +15,13 @@ import pandas as pd
 # import data
 df = pd.read_csv("./data/processed/cleaned_neighbour_survey.csv")
 
-# replace null values by zeros in questions 3 to 8 inclusively
-df["q003"] = df["q003"].fillna(0)
-df["q004"] = df["q004"].fillna(0)
-df["q005"] = df["q005"].fillna(0)
-df["q006"] = df["q006"].fillna(0)
-df["q007"] = df["q007"].fillna(0)
-df["q008"] = df["q008"].fillna(0)
+# keep respondents who answered all questions between 3 and 8 inclusively
+df = df[df.q003.notnull()]
+df = df[df.q004.notnull()]
+df = df[df.q005.notnull()]
+df = df[df.q006.notnull()]
+df = df[df.q007.notnull()]
+df = df[df.q008.notnull()]
 
 # set categories for questions 3 and 4
 HH_scores = {
@@ -103,4 +103,6 @@ df["food_security_status"].value_counts()
 df["food_security_status"].value_counts(normalize=True)
 
 # save the new df
-df.to_csv("./data/processed/food_security_status.csv", header=True, index=False)
+df.to_csv(
+    "./data/processed/food_security_status_sub_sample.csv", header=True, index=False
+)

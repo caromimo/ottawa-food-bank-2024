@@ -54,7 +54,9 @@ raw = pd.read_csv("../data/raw/neighbour_survey_clean-2024-06-14.csv")
 
 df_all = pd.read_csv("../data/processed/cleaned_neighbour_survey.csv")
 
-df = pd.read_csv("../data/processed/food_security_status_sub_sample.csv")
+df = pd.read_csv("../data/processed/food_security_status.csv")
+
+df_no_nas = pd.read_csv("../data/processed/food_security_status_sub_sample.csv")
 ```
 
 ## Cleaning data
@@ -144,14 +146,25 @@ fig = go.Figure(
 fig
 ```
 
-Of the respondents who answered all questions, the distribution of the food security scores was as follow: 
+<br />
+
+## Visualizing the food security
+
+Of all respondents, the distribution of the food security scores was as follow:
 
 ```{python}
 # | echo: false
 px.histogram(df, x="food_security_score", nbins=7)
 ```
 
-Which translates to the following food security status. Most respondents (87%) have very low food security.
+Of the respondents who answered all questions, the distribution of the food security scores was as follow: 
+
+```{python}
+# | echo: false
+px.histogram(df_no_nas, x="food_security_score", nbins=7)
+```
+
+Which translates to the following food security status for all respondants: 
 
 ```{python}
 # | echo: false
@@ -161,6 +174,23 @@ fig = go.Figure(
         go.Bar(
             x=df.food_security_status.value_counts().index,
             y=df.food_security_status.value_counts(),
+        )
+    ],
+    layout_title_text="Food security status (n=2816)",
+)
+fig
+```
+
+And the following food security status for all respondants who answered all questions:
+
+```{python}
+# | echo: false
+
+fig = go.Figure(
+    data=[
+        go.Bar(
+            x=df_no_nas.food_security_status.value_counts().index,
+            y=df_no_nas.food_security_status.value_counts(),
         )
     ],
     layout_title_text="Food security status (n=2816)",
