@@ -139,23 +139,37 @@ fig
 
 <br />
 
-## Visualizing the food security
-
-Of all respondents, the distribution of the food security scores was as follow:
+## Visualizing food security of respondents
 
 ```{python}
 # | echo: false
-px.histogram(df, x="food_security_score", nbins=7)
+fig = px.histogram(
+    df,
+    x="food_security_score",
+    nbins=7,
+)
+
+fig.update_layout(
+    title="Food security scores of all respondents (n=4054)",
+    xaxis_title="Food security score",
+    yaxis_title="Number of respondents",
+)
 ```
 
-Of the respondents who answered all questions, the distribution of the food security scores was as follow: 
+<br />
 
 ```{python}
 # | echo: false
-px.histogram(df_no_nas, x="food_security_score", nbins=7)
+fig = px.histogram(df_no_nas, x="food_security_score", nbins=7)
+
+fig.update_layout(
+    title="Food security scores of respondents with complete answers (n=2816)",
+    xaxis_title="Food security score",
+    yaxis_title="Number of respondents",
+)
 ```
 
-Which translates to the following food security status for all respondants: 
+<br />
 
 ```{python}
 # | echo: false
@@ -166,13 +180,19 @@ fig = go.Figure(
             x=df.food_security_status.value_counts().index,
             y=df.food_security_status.value_counts(),
         )
-    ],
-    layout_title_text="Food security status (n=2816)",
+    ]
 )
+
+fig.update_layout(
+    title="Food security status of all respondents (n=4054)",
+    xaxis_title="Food security status",
+    yaxis_title="Number of respondents",
+)
+
 fig
 ```
 
-And the following food security status for all respondants who answered all questions:
+<br />
 
 ```{python}
 # | echo: false
@@ -183,11 +203,19 @@ fig = go.Figure(
             x=df_no_nas.food_security_status.value_counts().index,
             y=df_no_nas.food_security_status.value_counts(),
         )
-    ],
-    layout_title_text="Food security status (n=2816)",
+    ]
 )
+
+fig.update_layout(
+    title="Food security status of respondents with complete answers (n=2816)",
+    xaxis_title="Food security status",
+    yaxis_title="Number of respondents",
+)
+
 fig
 ```
+
+<br />
 
 ```{python}
 # | echo: false
