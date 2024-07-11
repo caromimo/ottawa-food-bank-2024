@@ -17,7 +17,9 @@ app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
 # app layout
 app.layout = html.Main(
     [
-        html.H1(children="Ottawa Food Bank - 2024 Neighbour Survey Analysis"),
+        html.H1(
+            children="Ottawa Food Bank - 2024 Neighbour Survey Analysis - UNREVISED DRAFT"
+        ),
         html.Hr(),
         dbc.Row(
             [
@@ -26,27 +28,43 @@ app.layout = html.Main(
                         id="food_security_status_dropdown",
                         options=[
                             {
-                                "label": "High or marginal food security",
-                                "value": "High/marginal food security",
+                                "label": "High",
+                                "value": "High  ",
                             },
                             {
-                                "label": "Low food security",
-                                "value": "Low food security",
+                                "label": "Marginal",
+                                "value": "Marginal",
                             },
                             {
-                                "label": "Very low food security",
-                                "value": "Very low food security",
+                                "label": "Low",
+                                "value": "Low",
+                            },
+                            {
+                                "label": "Very low",
+                                "value": "Very low",
                             },
                         ],
-                        value="Very low food security",
+                        value="Very low",
                     )
                 ),
                 dbc.Col(
                     dcc.Dropdown(
                         id="question_dropdown",
                         options=[
-                            {"label": "Survey language", "value": "q001"},
-                            {"label": "Status in Canada", "value": "q035a"},
+                            {"label": "Q1. Survey language", "value": "q001"},
+                            {"label": "Q25. How old are you?", "value": "q025"},
+                            {
+                                "label": "Q26. How many people live in your household?",
+                                "value": "q026",
+                            },
+                            {
+                                "label": "Q35a. What is your status in Canada?",
+                                "value": "q035a",
+                            },
+                            {
+                                "label": "Q40a. Which of the following best describes where you currently live? ",
+                                "value": "q040a",
+                            },
                         ],
                         value="q001",
                     )
